@@ -3,8 +3,9 @@
 
 window.API_CONFIG = {
     // Use environment variables from Vercel
-    openai: process.env.OPENAI_API_KEY || 'sk-your-openai-api-key-here',
-    sonar: process.env.PERPLEXITY_API_KEY || 'pplx-your-perplexity-api-key-here',
+    // These will be replaced at build time by Vercel
+    openai: 'sk-your-openai-api-key-here',
+    sonar: 'pplx-your-perplexity-api-key-here',
     
     // Default provider
     provider: 'openai' // or 'sonar'

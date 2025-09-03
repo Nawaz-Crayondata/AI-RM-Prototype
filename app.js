@@ -13,25 +13,42 @@ class AIRelationshipManager {
         this.init();
     }
 
-    loadApiConfiguration() {
-        // Check if config is loaded from external file
-        if (window.API_CONFIG) {
-            this.apiKeys = {
-                openai: window.API_CONFIG.openai,
-                sonar: window.API_CONFIG.sonar
-            };
-            this.apiProvider = window.API_CONFIG.provider || 'openai';
-        } else {
-            // Fallback to placeholder values (for GitHub demo)
-            console.warn('⚠️ API_CONFIG not found. Using placeholder values. Please create config.js with your actual API keys.');
-            this.apiKeys = {
-                openai: 'sk-your-openai-api-key-here',
-                sonar: 'pplx-your-perplexity-api-key-here'
-            };
-            this.apiProvider = 'openai';
-            
-            // Show helpful message to user
-            this.showApiKeyMessage();
+    async loadApiConfiguration() {
+        try {
+            // Try to load from API endpoint (Vercel)
+            const response = await fetch('/api/config');
+            if (response.ok) {
+                const config = await response.json();
+                this.apiKeys = {
+                    openai: config.openai,
+                    sonar: config.sonar
+                };
+                this.apiProvider = config.provider || 'openai';
+                console.log('✅ Configuration loaded from API');
+            } else {
+                throw new Error('API config not available');
+            }
+        } catch (error) {
+            // Fallback to window config or placeholder values
+            if (window.API_CONFIG) {
+                this.apiKeys = {
+                    openai: window.API_CONFIG.openai,
+                    sonar: window.API_CONFIG.sonar
+                };
+                this.apiProvider = window.API_CONFIG.provider || 'openai';
+                console.log('✅ Configuration loaded from window.API_CONFIG');
+            } else {
+                // Fallback to placeholder values (for GitHub demo)
+                console.warn('⚠️ API_CONFIG not found. Using placeholder values. Please create config.js with your actual API keys.');
+                this.apiKeys = {
+                    openai: 'sk-your-openai-api-key-here',
+                    sonar: 'pplx-your-perplexity-api-key-here'
+                };
+                this.apiProvider = 'openai';
+                
+                // Show helpful message to user
+                this.showApiKeyMessage();
+            }
         }
         
         this.apiKey = this.apiKeys[this.apiProvider];
@@ -39,6 +56,7 @@ class AIRelationshipManager {
     }
 
     async init() {
+        await this.loadApiConfiguration();
         this.loadCustomerData();
         this.setupEventListeners();
         // Skip setup screen and go directly to chat
