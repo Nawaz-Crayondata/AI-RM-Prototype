@@ -1105,6 +1105,69 @@ select.form-control {
 
 
 
+/* API Key Notice */
+.api-key-notice {
+  text-align: center;
+  padding: var(--space-32) var(--space-20);
+  margin: auto 0;
+  background: linear-gradient(135deg, var(--danamon-primary-green) 0%, var(--danamon-accent-orange) 50%, var(--danamon-accent-yellow) 100%);
+  border-radius: var(--radius-lg);
+  color: var(--danamon-white);
+  box-shadow: 0 8px 32px rgba(27, 94, 32, 0.2);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.notice-icon {
+  font-size: 64px;
+  margin-bottom: var(--space-16);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.api-key-notice h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--danamon-white);
+  margin: 0 0 var(--space-16) 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.api-key-notice p {
+  font-size: var(--font-size-md);
+  color: var(--danamon-white);
+  margin: 0 0 var(--space-12) 0;
+  font-weight: var(--font-weight-medium);
+  opacity: 0.95;
+}
+
+.api-key-notice ol, .api-key-notice ul {
+  text-align: left;
+  margin: var(--space-16) 0;
+  padding-left: var(--space-24);
+}
+
+.api-key-notice li {
+  margin-bottom: var(--space-8);
+  color: var(--danamon-white);
+}
+
+.api-key-notice code {
+  background: rgba(255, 255, 255, 0.2);
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-mono);
+}
+
+.api-key-notice a {
+  color: var(--danamon-white);
+  text-decoration: underline;
+  font-weight: var(--font-weight-semibold);
+}
+
+.api-key-notice a:hover {
+  color: #FFD700;
+}
+
 /* Utility Classes */
 .hidden {
   display: none !important;

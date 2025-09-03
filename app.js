@@ -29,6 +29,9 @@ class AIRelationshipManager {
                 sonar: 'pplx-your-perplexity-api-key-here'
             };
             this.apiProvider = 'openai';
+            
+            // Show helpful message to user
+            this.showApiKeyMessage();
         }
         
         this.apiKey = this.apiKeys[this.apiProvider];
@@ -211,6 +214,31 @@ Available Bank Products: ${JSON.stringify(this.bankProducts, null, 2)}`;
     }
 
 
+
+    showApiKeyMessage() {
+        // Show a helpful message when API keys are not configured
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (messagesContainer) {
+            messagesContainer.innerHTML = `
+                <div class="api-key-notice">
+                    <div class="notice-icon">🔑</div>
+                    <h2>API Key Required</h2>
+                    <p>This is a demo version. To use the AI features, you need to:</p>
+                    <ol>
+                        <li>Clone this repository locally</li>
+                        <li>Create a <code>config.js</code> file with your API keys</li>
+                        <li>Run the app locally</li>
+                    </ol>
+                    <p><strong>Get API Keys:</strong></p>
+                    <ul>
+                        <li><a href="https://platform.openai.com/api-keys" target="_blank">OpenAI API Key</a></li>
+                        <li><a href="https://www.perplexity.ai/settings/api" target="_blank">Perplexity API Key</a></li>
+                    </ul>
+                    <p><em>For production deployment, consider using Netlify or Vercel with environment variables.</em></p>
+                </div>
+            `;
+        }
+    }
 
     async startInitialConversation() {
         if (this.conversationStarted) return;

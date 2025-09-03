@@ -1,6 +1,9 @@
 # API Keys and Configuration
 config.js
 
+# Vercel
+.vercel
+
 # Environment variables
 .env
 .env.local
