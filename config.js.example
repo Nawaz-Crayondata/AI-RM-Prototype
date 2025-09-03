@@ -1,0 +1,12 @@
+// Example configuration file for API keys
+// Copy this file to config.js and add your actual API keys
+// DO NOT commit config.js to version control
+
+window.API_CONFIG = {
+    // Replace these with your actual API keys
+    openai: 'sk-your-openai-api-key-here',
+    sonar: 'pplx-your-perplexity-api-key-here',
+    
+    // Choose your preferred AI provider
+    provider: 'openai' // Options: 'openai' or 'sonar'
+};

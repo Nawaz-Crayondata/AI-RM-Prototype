@@ -1,15 +1,8 @@
 // AI Relationship Manager Chat Application with Real API Integration
 class AIRelationshipManager {
     constructor() {
-        // API Keys - Replace with your actual API keys
-        this.apiKeys = {
-            openai: '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', // Replace with your OpenAI API key
-            sonar: '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' // Replace with your Perplexity API key
-        };
-        
-        // Default to OpenAI, but you can change this
-        this.apiProvider = 'openai'; // or 'sonar' for Perplexity
-        this.apiKey = this.apiKeys[this.apiProvider];
+        // Load API configuration from external config file
+        this.loadApiConfiguration();
         
         this.conversationHistory = [];
         this.customerData = null;
@@ -18,6 +11,28 @@ class AIRelationshipManager {
         this.conversationStarted = false;
         this.apiTested = true; // Assume API is working since we have the key
         this.init();
+    }
+
+    loadApiConfiguration() {
+        // Check if config is loaded from external file
+        if (window.API_CONFIG) {
+            this.apiKeys = {
+                openai: window.API_CONFIG.openai,
+                sonar: window.API_CONFIG.sonar
+            };
+            this.apiProvider = window.API_CONFIG.provider || 'openai';
+        } else {
+            // Fallback to placeholder values (for GitHub demo)
+            console.warn('⚠️ API_CONFIG not found. Using placeholder values. Please create config.js with your actual API keys.');
+            this.apiKeys = {
+                openai: 'sk-your-openai-api-key-here',
+                sonar: 'pplx-your-perplexity-api-key-here'
+            };
+            this.apiProvider = 'openai';
+        }
+        
+        this.apiKey = this.apiKeys[this.apiProvider];
+        this.apiTested = true; // Assume API is working since we have the key
     }
 
     async init() {
