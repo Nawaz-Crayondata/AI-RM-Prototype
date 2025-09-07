@@ -11,54 +11,53 @@ class AIRelationshipManager {
     }
 
     async loadApiConfiguration() {
-        const apiEndpoints = ['/api/config.json', '/api/config', '/pages/api/config'];
-        let configLoaded = false;
-        
-        for (const endpoint of apiEndpoints) {
-            try {
-                console.log(`🔄 Attempting to load configuration from ${endpoint}...`);
-                const response = await fetch(endpoint);
-                
-                if (response.ok) {
-                    const config = await response.json();
-                    console.log('📋 Config received:', { 
-                        endpoint: endpoint,
-                        hasOpenAI: !!config.openai && config.openai !== 'sk-your-openai-api-key-here',
-                        hasSonar: !!config.sonar && config.sonar !== 'pplx-your-perplexity-api-key-here',
-                        provider: config.provider
-                    });
-                    
-                    this.apiKeys = {
-                        openai: config.openai,
-                        sonar: config.sonar
-                    };
-                    this.apiProvider = config.provider || 'openai';
-                    console.log(`✅ Configuration loaded from ${endpoint}`);
-                    configLoaded = true;
-                    break;
-                } else {
-                    console.warn(`⚠️ ${endpoint} returned ${response.status}: ${response.statusText}`);
-                }
-            } catch (error) {
-                console.warn(`⚠️ Failed to load from ${endpoint}:`, error.message);
-            }
-        }
-        
-        if (!configLoaded) {
-            console.warn('⚠️ All API endpoints failed, trying fallback...');
+        // First, try to load from window.API_CONFIG (from config.js)
+        if (window.API_CONFIG) {
+            console.log('✅ Found window.API_CONFIG, using it directly');
+            this.apiKeys = {
+                openai: window.API_CONFIG.openai,
+                sonar: window.API_CONFIG.sonar
+            };
+            this.apiProvider = window.API_CONFIG.provider || 'openai';
+            console.log('✅ Configuration loaded from window.API_CONFIG');
+        } else {
+            // Try API endpoints as fallback
+            const apiEndpoints = ['/api/config.json', '/api/config', '/pages/api/config'];
+            let configLoaded = false;
             
-            // Fallback to window config or placeholder values
-            if (window.API_CONFIG) {
-                this.apiKeys = {
-                    openai: window.API_CONFIG.openai,
-                    sonar: window.API_CONFIG.sonar
-                };
-                this.apiProvider = window.API_CONFIG.provider || 'openai';
-                console.log('✅ Configuration loaded from window.API_CONFIG');
-                configLoaded = true;
-            } else {
-                // Fallback to placeholder values (for GitHub demo)
-                console.warn('⚠️ API_CONFIG not found. Using placeholder values. Please create config.js with your actual API keys.');
+            for (const endpoint of apiEndpoints) {
+                try {
+                    console.log(`🔄 Attempting to load configuration from ${endpoint}...`);
+                    const response = await fetch(endpoint);
+                    
+                    if (response.ok) {
+                        const config = await response.json();
+                        console.log('📋 Config received:', { 
+                            endpoint: endpoint,
+                            hasOpenAI: !!config.openai && config.openai !== 'sk-your-openai-api-key-here',
+                            hasSonar: !!config.sonar && config.sonar !== 'pplx-your-perplexity-api-key-here',
+                            provider: config.provider
+                        });
+                        
+                        this.apiKeys = {
+                            openai: config.openai,
+                            sonar: config.sonar
+                        };
+                        this.apiProvider = config.provider || 'openai';
+                        console.log(`✅ Configuration loaded from ${endpoint}`);
+                        configLoaded = true;
+                        break;
+                    } else {
+                        console.warn(`⚠️ ${endpoint} returned ${response.status}: ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Failed to load from ${endpoint}:`, error.message);
+                }
+            }
+            
+            if (!configLoaded) {
+                // Final fallback to placeholder values
+                console.warn('⚠️ All configuration methods failed, using placeholder values');
                 this.apiKeys = {
                     openai: 'sk-your-openai-api-key-here',
                     sonar: 'pplx-your-perplexity-api-key-here'
