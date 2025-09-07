@@ -4,7 +4,7 @@
 
 window.API_CONFIG = {
     // Replace these with your actual API keys
-    openai: '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',
+    openai: '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',
     sonar: 'pplx-your-perplexity-api-key-here',
     
     // Default provider
