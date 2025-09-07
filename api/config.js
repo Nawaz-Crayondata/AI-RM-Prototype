@@ -28,8 +28,8 @@ export default function handler(req, res) {
     openaiKey: openaiKey ? openaiKey.substring(0, 10) + '...' : 'undefined'
   });
   
-  // Use actual environment variables or fallback to the ones from config.js
-  const fallbackOpenAI = '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';
+  // Use actual environment variables or fallback to placeholder
+  const fallbackOpenAI = 'sk-your-openai-api-key-here';
   const fallbackSonar = 'pplx-your-perplexity-api-key-here';
   
   res.status(200).json({
