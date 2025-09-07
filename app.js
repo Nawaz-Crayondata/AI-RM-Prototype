@@ -11,31 +11,41 @@ class AIRelationshipManager {
     }
 
     async loadApiConfiguration() {
-        try {
-            // Try to load from API endpoint (Vercel)
-            console.log('🔄 Attempting to load configuration from /api/config...');
-            const response = await fetch('/api/config');
-            
-            if (response.ok) {
-                const config = await response.json();
-                console.log('📋 Config received:', { 
-                    hasOpenAI: !!config.openai && config.openai !== 'sk-your-openai-api-key-here',
-                    hasSonar: !!config.sonar && config.sonar !== 'pplx-your-perplexity-api-key-here',
-                    provider: config.provider
-                });
+        const apiEndpoints = ['/api/config', '/pages/api/config'];
+        let configLoaded = false;
+        
+        for (const endpoint of apiEndpoints) {
+            try {
+                console.log(`🔄 Attempting to load configuration from ${endpoint}...`);
+                const response = await fetch(endpoint);
                 
-                this.apiKeys = {
-                    openai: config.openai,
-                    sonar: config.sonar
-                };
-                this.apiProvider = config.provider || 'openai';
-                console.log('✅ Configuration loaded from API');
-            } else {
-                console.error('❌ API config response not ok:', response.status, response.statusText);
-                throw new Error(`API config not available: ${response.status}`);
+                if (response.ok) {
+                    const config = await response.json();
+                    console.log('📋 Config received:', { 
+                        endpoint: endpoint,
+                        hasOpenAI: !!config.openai && config.openai !== 'sk-your-openai-api-key-here',
+                        hasSonar: !!config.sonar && config.sonar !== 'pplx-your-perplexity-api-key-here',
+                        provider: config.provider
+                    });
+                    
+                    this.apiKeys = {
+                        openai: config.openai,
+                        sonar: config.sonar
+                    };
+                    this.apiProvider = config.provider || 'openai';
+                    console.log(`✅ Configuration loaded from ${endpoint}`);
+                    configLoaded = true;
+                    break;
+                } else {
+                    console.warn(`⚠️ ${endpoint} returned ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.warn(`⚠️ Failed to load from ${endpoint}:`, error.message);
             }
-        } catch (error) {
-            console.warn('⚠️ Failed to load from API, trying fallback:', error.message);
+        }
+        
+        if (!configLoaded) {
+            console.warn('⚠️ All API endpoints failed, trying fallback...');
             
             // Fallback to window config or placeholder values
             if (window.API_CONFIG) {
