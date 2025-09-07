@@ -1,0 +1,5 @@
+{
+  "openai": "sk-your-openai-api-key-here",
+  "sonar": "pplx-your-perplexity-api-key-here",
+  "provider": "openai"
+}

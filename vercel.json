@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "node build-config.js",
   "builds": [
     {
       "src": "api/**/*.js",

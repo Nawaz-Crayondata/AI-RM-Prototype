@@ -11,7 +11,7 @@ class AIRelationshipManager {
     }
 
     async loadApiConfiguration() {
-        const apiEndpoints = ['/api/config', '/pages/api/config'];
+        const apiEndpoints = ['/api/config.json', '/api/config', '/pages/api/config'];
         let configLoaded = false;
         
         for (const endpoint of apiEndpoints) {
@@ -55,6 +55,7 @@ class AIRelationshipManager {
                 };
                 this.apiProvider = window.API_CONFIG.provider || 'openai';
                 console.log('✅ Configuration loaded from window.API_CONFIG');
+                configLoaded = true;
             } else {
                 // Fallback to placeholder values (for GitHub demo)
                 console.warn('⚠️ API_CONFIG not found. Using placeholder values. Please create config.js with your actual API keys.');
