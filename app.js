@@ -1,9 +1,6 @@
 // AI Relationship Manager Chat Application with Real API Integration
 class AIRelationshipManager {
     constructor() {
-        // Load API configuration from external config file
-        this.loadApiConfiguration();
-        
         this.conversationHistory = [];
         this.customerData = null;
         this.systemPrompt = null;
@@ -16,9 +13,17 @@ class AIRelationshipManager {
     async loadApiConfiguration() {
         try {
             // Try to load from API endpoint (Vercel)
+            console.log('🔄 Attempting to load configuration from /api/config...');
             const response = await fetch('/api/config');
+            
             if (response.ok) {
                 const config = await response.json();
+                console.log('📋 Config received:', { 
+                    hasOpenAI: !!config.openai && config.openai !== 'sk-your-openai-api-key-here',
+                    hasSonar: !!config.sonar && config.sonar !== 'pplx-your-perplexity-api-key-here',
+                    provider: config.provider
+                });
+                
                 this.apiKeys = {
                     openai: config.openai,
                     sonar: config.sonar
@@ -26,9 +31,12 @@ class AIRelationshipManager {
                 this.apiProvider = config.provider || 'openai';
                 console.log('✅ Configuration loaded from API');
             } else {
-                throw new Error('API config not available');
+                console.error('❌ API config response not ok:', response.status, response.statusText);
+                throw new Error(`API config not available: ${response.status}`);
             }
         } catch (error) {
+            console.warn('⚠️ Failed to load from API, trying fallback:', error.message);
+            
             // Fallback to window config or placeholder values
             if (window.API_CONFIG) {
                 this.apiKeys = {
@@ -52,6 +60,11 @@ class AIRelationshipManager {
         }
         
         this.apiKey = this.apiKeys[this.apiProvider];
+        console.log('🔑 Final API key status:', {
+            provider: this.apiProvider,
+            keyLength: this.apiKey ? this.apiKey.length : 0,
+            isValid: this.apiKey && this.apiKey !== 'sk-your-openai-api-key-here' && this.apiKey !== 'pplx-your-perplexity-api-key-here'
+        });
         this.apiTested = true; // Assume API is working since we have the key
     }
 
